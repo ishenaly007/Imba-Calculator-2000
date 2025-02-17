@@ -9,14 +9,12 @@ buttons.forEach((item) => {
       let string = display.innerText.toString();
       display.innerText = string.substr(0, string.length - 1);
     } else if (display.innerText != "" && item.id == "equal") {
-      // Пасхалки 🎉
       const expression = display.innerText.trim();
 
       const easterEggs = {
-        "2+2": "Рыба!",
-        "9+10": "21",
-        "007": "Агент Бонд",
-        "13-7": "Везёт тебе!",
+        "2+2": "Слишком сложно...",
+        "1+1": "Тупооой...",
+        "1000-7": "дед инсайд(",
       };
 
       if (easterEggs.hasOwnProperty(expression)) {
@@ -26,7 +24,7 @@ buttons.forEach((item) => {
       }
     } else if (display.innerText == "" && item.id == "equal") {
       display.innerText = "Empty!";
-      setTimeout(() => (display.innerText = ""), 2000);
+      setTimeout(() => (display.innerText = ""), 1000);
     } else {
       display.innerText += item.id;
     }
