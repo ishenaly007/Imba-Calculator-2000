@@ -1,90 +1,124 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator 2000</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Calculator 2000</title>
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+	<body>
+		<header class="header">
+			<h1>CALCULATOR 2000</h1>
+			<div class="link">
+				<button class="Chat">Чат с ИИ</button>
+				<button class="Chat">Что-то</button>
+				<button class="Chat">Пожертвование</button>
+				<button class="aboutUs">О нас</button>
+			</div>
+			<button data-modal-target="#modal">Open Modal</button>
+		</header>
 
-<header class='header'>
-    <h1>CALCULATOR 2000</h1>
-    <div class='link'>
-        <button class='Chat'>Чат с ИИ</button>
-        <button class='Chat'>Что-то</button>
-        <button class='Chat'>Жалоба и пожелания</button>
-        <button class='aboutUs'>О нас</button>
-    </div>
-    <button id="open-modal-btn">Войти</button>
-</header>
+		<!-- Модальное окно для регистрации -->
+		<div class="modal" id="modal">
+			<div class="modal-header">
+				<div class="title">Регистрация</div>
+				<button data-close-button class="close-button">&times;</button>
+			</div>
+			<div class="modal-body">
+				<form id="registration-form">
+					<label for="username">Логин:</label>
+					<input
+						type="text"
+						id="username"
+						name="username"
+						required
+						placeholder="Введите логин"
+					/>
 
-<!-- Модальное окно -->
-<div id="auth-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 id="modal-title">Вход</h2>
+					<label for="password">Пароль:</label>
+					<input
+						type="password"
+						id="password"
+						name="password"
+						required
+						placeholder="Введите пароль"
+					/>
 
-        <div id="login-form">
-            <input type="email" id="login-username" placeholder="Логин">
-            <input type="password" id="login-password" placeholder="Пароль">
-            <button id="login-btn">Войти</button>
-            <p>Нет аккаунта? <span id="switch-to-register">Зарегистрироваться</span></p>
-        </div>
+					<label for="confirm-password">Подтверждение пароля:</label>
+					<input
+						type="password"
+						id="confirm-password"
+						name="confirm-password"
+						required
+						placeholder="Подтвердите пароль"
+					/>
 
-        <div id="register-form" style="display: none;">
-            <input type="email" id="register-username" placeholder="Логин">
-            <input type="password" id="register-password" placeholder="Пароль">
-            <input type="password" id="confirm-password" placeholder="Подтвердите пароль">
-            <button id="register-btn">Зарегистрироваться</button>
-            <p>Уже есть аккаунт? <span id="switch-to-login">Войти</span></p>
-        </div>
+					<button type="submit" id="register-btn">Зарегистрироваться</button>
+				</form>
+			</div>
+		</div>
+		<div id="overlay"></div>
 
-        <p id="auth-status"></p>
-    </div>
-</div>
+		<div class="container">
+			<div class="calculator">
+				<div class="display-screen">
+					<div id="display"></div>
+				</div>
+				<div class="buttons">
+					<table>
+						<tr>
+							<td><button class="btn-operator" id="square">x²</button></td>
+							<td><button class="btn-operator" id="clear">C</button></td>
+							<td><button class="btn-operator" id="/">&divide;</button></td>
+							<td><button class="btn-operator" id="*">&times;</button></td>
+							<td><button class="btn-operator" id="backspace"><</button></td>
+						</tr>
+						<tr>
+							<td><button class="btn-operator" id="cube">x³</button></td>
+							<td><button class="btn-number" id="7">7</button></td>
+							<td><button class="btn-number" id="8">8</button></td>
+							<td><button class="btn-number" id="9">9</button></td>
+							<td><button class="btn-operator" id="-">-</button></td>
+						</tr>
+						<tr>
+							<td><button class="btn-operator" id="pow">xⁿ</button></td>
+							<td><button class="btn-number" id="4">4</button></td>
+							<td><button class="btn-number" id="5">5</button></td>
+							<td><button class="btn-number" id="6">6</button></td>
+							<td><button class="btn-operator" id="+">+</button></td>
+						</tr>
+						<tr>
+							<td><button class="btn-operator" id="fact">n!</button></td>
+							<td><button class="btn-number" id="1">1</button></td>
+							<td><button class="btn-number" id="2">2</button></td>
+							<td><button class="btn-number" id="3">3</button></td>
+							<td rowspan="2">
+								<button class="btn-equal" id="equal">=</button>
+							</td>
+						</tr>
+						<tr>
+							<td><button class="btn-operator" id="ln">ln</button></td>
+							<td><button class="btn-operator" id="(">(</button></td>
+							<td><button class="btn-number" id="0">0</button></td>
+							<td><button class="btn-operator" id=")">)</button></td>
+						</tr>
+						<tr>
+							<td><button class="btn-operator" id="sin">sin</button></td>
+							<td><button class="btn-operator" id="cos">cos</button></td>
+							<td><button class="btn-operator" id="tan">tan</button></td>
+							<td><button class="btn-operator" id="log">log</button></td>
+						</tr>
+						<tr>
+							<td><button class="btn-operator" id="abs">abs(</button></td>
+							<td><button class="btn-operator" id="sqrt">√</button></td>
+							<td><button class="btn-operator" id="pi">π</button></td>
+							<td><button class="btn-operator" id="e">e</button></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
 
-<div class="container">
-    <div class="calculator">
-        <div class="display-screen">
-            <div id="display"></div>
-        </div>
-        <div class="buttons">
-            <table>
-                <tr>
-                    <td><button class="btn-operator" id="clear">C</button></td>
-                    <td><button class="btn-operator" id="/">&divide;</button></td>
-                    <td><button class="btn-operator" id="*">&times;</button></td>
-                    <td><button class="btn-operator" id="backspace"><</button></td>
-                </tr>
-                <tr>
-                    <td><button class="btn-number" id="7">7</button></td>
-                    <td><button class="btn-number" id="8">8</button></td>
-                    <td><button class="btn-number" id="9">9</button></td>
-                    <td><button class="btn-operator" id="-">-</button></td>
-                </tr>
-                <tr>
-                    <td><button class="btn-number" id="4">4</button></td>
-                    <td><button class="btn-number" id="5">5</button></td>
-                    <td><button class="btn-number" id="6">6</button></td>
-                    <td><button class="btn-operator" id="+">+</button></td>
-                </tr>
-                <tr>
-                    <td><button class="btn-number" id="1">1</button></td>
-                    <td><button class="btn-number" id="2">2</button></td>
-                    <td><button class="btn-number" id="3">3</button></td>
-                    <td rowspan="2"><button class="btn-equal" id="equal">=</button></td>
-                </tr>
-                <tr>
-                    <td><button class="btn-operator" id="(">(</button></td>
-                    <td><button class="btn-number" id="0">0</button></td>
-                    <td><button class="btn-operator" id=")">)</button></td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</div>
-
-<script src="./js/index.js"></script>
-</body>
+		<script src="./js/index.js" defer></script>
+	</body>
 </html>

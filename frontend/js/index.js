@@ -1,145 +1,127 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const display = document.querySelector("#display");
-  const buttons = document.querySelectorAll(".buttons button");
-  const themeToggleBtn = document.querySelector(".theme-toggler");
-  const calculator = document.querySelector(".calculator");
+document.addEventListener('DOMContentLoaded', function () {
+	const display = document.querySelector('#display')
+	const buttons = document.querySelectorAll('.buttons button')
+	const openModalButtons = document.querySelectorAll('[data-modal-target]')
+	const closeModalButtons = document.querySelectorAll('[data-close-button]')
+	const overlay = document.getElementById('overlay')
 
-  let isEasterEggActive = false;
+	openModalButtons.forEach(button => {
+		button.addEventListener('click', () => {
+			const modal = document.querySelector(button.dataset.modalTarget)
+			openModal(modal)
+		})
+	})
 
-  const easterEggs = {
-      "2+2": "Слишком сложно...",
-      "1+1": "Тупоооой...",
-      "007": "Агент Бонд",
-      "1000-7": "Дед инсайд("
-  };
+	overlay.addEventListener('click', () => {
+		document.querySelectorAll('.modal.active').forEach(closeModal)
+	})
 
-  function factorial(n) {
-      return n <= 1 ? 1 : n * factorial(n - 1);
-  }
+	closeModalButtons.forEach(button => {
+		button.addEventListener('click', () => closeModal(button.closest('.modal')))
+	})
 
-  function safeEval(expression) {
-      try {
-          if (expression.includes("!")) {
-              return expression.replace(/(\d+)!/g, (_, num) => factorial(parseInt(num)));
-          }
-          return eval(expression.replace("^", "**"));
-      } catch {
-          return "Ошибка!";
-      }
-  }
+	function openModal(modal) {
+		if (modal == null) return
+		modal.classList.add('active')
+		overlay.classList.add('active')
+	}
 
-  buttons.forEach((item) => {
-      item.onclick = () => {
-          if (item.id === "clear") {
-              display.innerText = "";
-              isEasterEggActive = false;
-          } else if (item.id === "backspace") {
-              display.innerText = display.innerText.slice(0, -1);
-              if (!isNaN(display.innerText)) isEasterEggActive = false;
-          } else if (display.innerText !== "" && item.id === "equal") {
-              const expression = display.innerText.trim();
+	function closeModal(modal) {
+		if (modal == null) return
+		modal.classList.remove('active')
+		overlay.classList.remove('active')
+	}
 
-              if (easterEggs.hasOwnProperty(expression)) {
-                  display.innerText = easterEggs[expression];
-                  isEasterEggActive = true;
-              } else {
-                  display.innerText = safeEval(expression);
-              }
-          } else if (display.innerText === "" && item.id === "equal") {
-              display.innerText = "Empty!";
-              setTimeout(() => (display.innerText = ""), 2000);
-          } else {
-              if (isEasterEggActive) return;
-              display.innerText += item.id === "sqrt" ? "Math.sqrt(" : item.id;
-          }
-      };
-  });
+	let isEasterEggActive = false
 
-  let isDark = true;
-  themeToggleBtn.onclick = () => {
-      calculator.classList.toggle("dark");
-      themeToggleBtn.classList.toggle("active");
-      isDark = !isDark;
-  };
+	const easterEggs = {
+		'2+2': 'Слишком сложно...',
+		'1+1': 'Тупоооой...',
+		'007': 'Агент Бонд',
+		'1000-7': 'Дед инсайд(',
+		'0+0': 'Незнаю(',
+		'0-0': 'Незнаю(',
+	}
 
-  // ------------------- АВТОРИЗАЦИЯ -------------------
-  const modal = document.getElementById("auth-modal");
-  const openModalBtn = document.getElementById("open-modal-btn");
-  const closeModal = document.querySelector(".close");
+	function factorial(n) {
+		if (n === 0 || n === 1) return 1
+		return n * factorial(n - 1)
+	}
 
-  const loginForm = document.getElementById("login-form");
-  const registerForm = document.getElementById("register-form");
-  const switchToRegister = document.getElementById("switch-to-register");
-  const switchToLogin = document.getElementById("switch-to-login");
+	function safeEval(expression) {
+		try {
+			expression = expression
+				.replace(/(\d+)!/g, (_, num) => factorial(parseInt(num)))
+				.replace(/\^/g, '**')
+				.replace(/√(\d+)/g, (_, num) => `Math.sqrt(${num})`)
+				.replace(/sin\(([^)]+)\)/g, (_, num) => `Math.sin(${num} * Math.PI / 180)`)
+				.replace(/cos\(([^)]+)\)/g, (_, num) => `Math.cos(${num} * Math.PI / 180)`)
+				.replace(/tan\(([^)]+)\)/g, (_, num) => `Math.tan(${num} * Math.PI / 180)`)
+				.replace(/log\(([^)]+)\)/g, (_, num) => `Math.log10(${num})`)
+				.replace(/ln\(([^)]+)\)/g, (_, num) => `Math.log(${num})`)
+				.replace(/π/g, 'Math.PI')
+				.replace(/e/g, 'Math.E')
+                expression = expression.replace(/abs\(([^)]+)\)/g, (_, num) => `Math.abs(${num})`)
+			return eval(expression)
+		} catch {
+			return 'Ошибка!'
+		}
+	}
 
-  const authStatus = document.getElementById("auth-status");
+	const operators = ['+', '-', '*', '/', '^']
 
-  let users = JSON.parse(localStorage.getItem("users")) || {}; // Загружаем сохраненных пользователей
+	buttons.forEach(button => {
+		button.addEventListener('click', () => {
+			let id = button.id
+			let lastChar = display.innerText.slice(-1)
 
-  openModalBtn.onclick = () => modal.style.display = "flex";
-  closeModal.onclick = () => modal.style.display = "none";
+			if (id === 'clear') {
+				display.innerText = ''
+				isEasterEggActive = false
+				return
+			}
 
-  switchToRegister.onclick = () => {
-      loginForm.style.display = "none";
-      registerForm.style.display = "block";
-      document.getElementById("modal-title").innerText = "Регистрация";
-  };
+			if (id === 'backspace') {
+				display.innerText = display.innerText.slice(0, -1)
+				isEasterEggActive = false
+				return
+			}
 
-  switchToLogin.onclick = () => {
-      loginForm.style.display = "block";
-      registerForm.style.display = "none";
-      document.getElementById("modal-title").innerText = "Вход";
-  };
+			if (id === 'equal') {
+				const expression = display.innerText.trim()
 
-  document.getElementById("register-btn").onclick = () => {
-      const username = document.getElementById("register-username").value.trim();
-      const password = document.getElementById("register-password").value;
-      const confirmPassword = document.getElementById("confirm-password").value;
+				if (easterEggs.hasOwnProperty(expression)) {
+					display.innerText = easterEggs[expression]
+					isEasterEggActive = true
+				} else {
+					display.innerText = safeEval(expression)
+				}
+				return
+			}
 
-      if (!username || !password) {
-          authStatus.innerText = "Заполните все поля!";
-          return;
-      }
+			if (isEasterEggActive) return
 
-      if (password !== confirmPassword) {
-          authStatus.innerText = "Пароли не совпадают!";
-          return;
-      }
+			if (operators.includes(id) && operators.includes(lastChar)) {
+				return
+			}
 
-      if (users[username]) {
-          authStatus.innerText = "Этот логин уже используется!";
-          return;
-      }
+			const specialCases = {
+				'square': '^2',
+				'cube': '^3',
+				'pow': '^',
+				'sqrt': '√(',
+				'fact': '!',
+				'sin': 'sin(',
+				'cos': 'cos(',
+				'tan': 'tan(',
+				'log': 'log(',
+				'ln': 'ln(',
+				'pi': 'π',
+				'e': 'e',
+                'abs': 'abs('
+			}
 
-      users[username] = password;
-      localStorage.setItem("users", JSON.stringify(users)); // Сохраняем пользователей
-
-      authStatus.innerText = "Успешная регистрация!";
-      setTimeout(() => {
-          switchToLogin.click();
-          authStatus.innerText = "";
-      }, 1000);
-  };
-
-  document.getElementById("login-btn").onclick = () => {
-      const username = document.getElementById("login-username").value.trim();
-      const password = document.getElementById("login-password").value;
-
-      if (users[username] && users[username] === password) {
-          authStatus.innerText = `Добро пожаловать, ${username}!`;
-          setTimeout(() => {
-              modal.style.display = "none";
-              openModalBtn.innerText = `Привет, ${username}`;
-              localStorage.setItem("currentUser", username); // Сохраняем текущего пользователя
-          }, 1000);
-      } else {
-          authStatus.innerText = "Неверный логин или пароль!";
-      }
-  };
-
-  // Проверка, если пользователь уже вошел
-  const currentUser = localStorage.getItem("currentUser");
-  if (currentUser) {
-      openModalBtn.innerText = `Привет, ${currentUser}`;
-  }
-});
+			display.innerText += specialCases[id] || button.innerText
+		})
+	})
+})

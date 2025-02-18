@@ -5,7 +5,7 @@ FROM openjdk:17-slim
 WORKDIR /app
 
 # Копируем JAR-файл в контейнер
-COPY target/backend-0.0.1-SNAPSHOT.jar app.jar
+COPY /backend-0.0.1-SNAPSHOT.jar app.jar
 
 # Открываем порт, на котором работает приложение
 EXPOSE 8083
